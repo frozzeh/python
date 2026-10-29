@@ -64,4 +64,22 @@ npm run test:python
 npm run build
 ```
 
-Разместите содержимое `dist/` на статическом HTTPS-хостинге. Для Sites конфигурация находится в `.openai/hosting.json`. Сервер Python или Node в production не требуется. При использовании CSP разрешите Web Workers, WebAssembly и загрузку Pyodide с `https://cdn.jsdelivr.net`.
+Разместите содержимое `dist/` на статическом HTTPS-хостинге. Основной хостинг проекта — GitHub Pages. Сервер Python или Node в production не требуется. При использовании CSP разрешите Web Workers, WebAssembly и загрузку Pyodide с `https://cdn.jsdelivr.net`.
+
+
+## GitHub Pages и автоматические обновления
+
+Адрес после включения Pages: https://frozzeh.github.io/python/
+
+Workflow `.github/workflows/pages.yml` при каждом push в `main` устанавливает зависимости, запускает Vitest и Python-проверки, собирает Vite с базовым путём `/python/` и публикует `dist/` в GitHub Pages. Секреты вручную добавлять не нужно: используются штатные разрешения `GITHUB_TOKEN` и OIDC.
+
+Для первого запуска в репозитории откройте **Settings → Pages → Build and deployment → Source → GitHub Actions**, если автоматическое включение недоступно для токена Actions. После этого повторите workflow **Publish GitHub Pages** на вкладке Actions. В дальнейшем достаточно push в `main`.
+
+Проверка production-сборки для Pages локально:
+
+```bash
+VITE_BASE_PATH=/python/ npm run build
+npm run preview
+```
+
+Базовый путь применяется к JS, CSS, Monaco worker и Pyodide worker. При обычном `npm run dev` приложение по-прежнему открывается от `/`.
